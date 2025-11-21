@@ -74,4 +74,11 @@ public class BibWarningToIntegrityMessageConverterTest {
         );
         assertEquals(expectedMessages, messages);
     }
+
+    @Test
+    void returnsEmptyListWhenInputListIsEmpty() {
+        List<BibWarning> list = List.of();
+        List<?> result = BibWarningToIntegrityMessageConverter.convert(list, new BibDatabaseContext());
+        assertEquals(result, List.of());
+    }
 }

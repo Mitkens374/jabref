@@ -3,6 +3,7 @@ package org.jabref.logic.biblog;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import org.jabref.model.database.BibDatabaseContext;
 import org.jabref.model.metadata.MetaData;
 
 import org.junit.jupiter.api.Test;
@@ -37,6 +38,26 @@ public class BibLogPathResolverTest {
     void returnsEmptyWhenNoUserPathAndNoBibPath() {
         MetaData metaData = new MetaData();
         Optional<Path> result = BibLogPathResolver.resolve(metaData, Optional.empty(), TEST_USER);
+        assertEquals(Optional.empty(), result);
+    }
+
+    @Test
+    void returnsWhenProvidedBibDatabaseContext() {
+        MetaData metaData = new MetaData();
+
+        Path userBlgPath = Path.of("/custom/path/output.blg");
+        metaData.setBlgFilePath(TEST_USER, userBlgPath);
+
+        BibDatabaseContext context = new BibDatabaseContext();
+        context.setMetaData(metaData);
+
+        Optional<Path> result = BibLogPathResolver.resolve(context);
+        assertEquals(Optional.of(userBlgPath), result);
+    }
+
+    @Test
+    void returnsEmptyWhenNoContext() {
+        Optional<?> result = BibLogPathResolver.resolve(null);
         assertEquals(Optional.empty(), result);
     }
 }
